@@ -24,16 +24,17 @@ fi
 
 cd ~/workspace/tulip/build/x64/debug/Qt5/
 qtVersion=$1
+installPrefix="$HOME/workspace/tulip/build/x64/debug/Qt/$qtVersion/install"
 cmake ~/workspace/tulip/tulip-src/tulip -G "Unix Makefiles" \
 	-D"USE_QT5_IF_INSTALLED=true" \
 	-D"CMAKE_CXX_FLAGS=-std=c++11" \
-	-D"CMAKE_INSTALL_PREFIX=~/workspace/tulip/build/x64/debug/Qt/$qtVersion/install" \
+	-D"CMAKE_INSTALL_PREFIX=$installPrefix" \
 	-D"CMAKE_BUILD_TYPE=Debug" \
         $ADDITIONAL_OPTIONS
 
 if [[ -z $PYTHONPATH ]]; then
-	echo 'export PYTHONPATH="~/workspace/tulip/build/x64/debug/Qt5/install/lib/python"' >> ~/.bashrc
+	echo "export PYTHONPATH=\"$installPrefix/lib/python\"" >> ~/.bashrc
 fi
 if [[ -z $LD_LIBRARY_PATH ]]; then
-	echo 'export LD_LIBRARY_PATH="~/workspace/tulip/build/x64/debug/Qt5/install/lib"' >> ~/.bashrc
+	echo "export LD_LIBRARY_PATH=\"$installPrefix/install/lib\"" >> ~/.bashrc
 fi
