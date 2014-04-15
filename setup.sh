@@ -13,15 +13,23 @@ fi
 
 mkdir -p ~/workspace/tulip/build/x64/debug/Qt5
 cd ~/workspace/tulip
-svn checkout svn://svn.code.sf.net/p/auber/code/tulip ./tulip-src
+if [[ -d ./tulip-src ]]; then
+  printf "\n\nrepo exists!\n\n"
 cd tulip-src
+  svn up
+  cd ..
+else
+  svn checkout svn://svn.code.sf.net/p/auber/code/tulip ./tulip-src
+fi
 
-Qt5Prefix="/usr/lib/x86_64-linux-gnu/cmake/Qt5"
-cmake ~/workspace/tulip/build/x64/debug/Qt5/ ~/workspace/tulip/tulip-src/tulip -G "Unix Makefiles" \
+cd ~/workspace/tulip/build/x64/debug/Qt5/
+qtVersion=$1
+cmake ~/workspace/tulip/tulip-src/tulip -G "Unix Makefiles" \
 	-D"USE_QT5_IF_INSTALLED=true" \
 	-D"CMAKE_CXX_FLAGS=-std=c++11" \
-	-D"CMAKE_INSTALL_PREFIX=~/workspace/tulip/build/x64/debug/Qt5/install" \
-	-D"CMAKE_BUILD_TYPE=Debug"
+	-D"CMAKE_INSTALL_PREFIX=~/workspace/tulip/build/x64/debug/Qt/$qtVersion/install" \
+	-D"CMAKE_BUILD_TYPE=Debug" \
+        $ADDITIONAL_OPTIONS
 
 if [[ -z $PYTHONPATH ]]; then
 	echo 'export PYTHONPATH="~/workspace/tulip/build/x64/debug/Qt5/install/lib/python"' >> ~/.bashrc
