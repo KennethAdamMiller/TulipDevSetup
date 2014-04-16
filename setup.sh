@@ -1,8 +1,10 @@
 #!/bin/bash
 qtVersion=$1
-if [[ $(uname) == "Darwin" ]]; then
-  export Qt5Prefix="/Applications/Qt/$qtVersion/clang_64/lib/cmake/Qt5"
-  export ADDITIONAL_OPTIONS="-DPYTHON_EXECUTABLE=/opt/local/bin/python3.4 -DPYTHON_INCLUDE_DIR=/opt/local/Library/Frameworks/Python.framework/Versions/3.4/include/python3.4m -DPYTHON_LIBRARY=/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/libpython3.4.dylib -DQt5Widgets_DIR=$(echo $Qt5Prefix)Widgets -DQt5OpenGL_DIR=$(echo $Qt5Prefix)OpenGL -DQt5Xml_DIR=$(echo $Qt5Prefix)Xml -DQt5XmlPatterns_DIR=$(echo $Qt5Prefix)XmlPatterns -DQt5Network_DIR=$(echo $Qt5Prefix)Network -DQt5WebKit_DIR=$(echo $Qt5Prefix)WebKit -DQt5WebKitWidgets_DIR=$(echo $Qt5Prefix)WebKitWidgets"
+if [[ ($qtVersion != "4.7.4") && ($qtVersion != "4.8.5") ]]; then
+  if [[ $(uname) == "Darwin" ]]; then
+    export Qt5Prefix="/Applications/Qt/$qtVersion/clang_64/lib/cmake/Qt5"
+    export ADDITIONAL_OPTIONS="-DUSE_QT5_IF_INSTALLED=true -DCMAKE_CXX_FLAGS=-std=c++11 -DQt5Widgets_DIR=$(echo $Qt5Prefix)Widgets -DQt5OpenGL_DIR=$(echo $Qt5Prefix)OpenGL -DQt5Xml_DIR=$(echo $Qt5Prefix)Xml -DQt5XmlPatterns_DIR=$(echo $Qt5Prefix)XmlPatterns -DQt5Network_DIR=$(echo $Qt5Prefix)Network -DQt5WebKit_DIR=$(echo $Qt5Prefix)WebKit -DQt5WebKitWidgets_DIR=$(echo $Qt5Prefix)WebKitWidgets"
+  fi
 fi
 
 if [[ $(uname) == "Linux" ]]; then
@@ -29,11 +31,13 @@ else
 fi
 
 cd $installPrefix/..
+
 cmake $installPrefix/.. $HOME/workspace/tulip/tulip-src/ -G "Unix Makefiles" \
-	-D"USE_QT5_IF_INSTALLED=true" \
-	-D"CMAKE_CXX_FLAGS=-std=c++11" \
 	-D"CMAKE_INSTALL_PREFIX=$installPrefix" \
 	-D"CMAKE_BUILD_TYPE=Debug" \
+        -D"PYTHON_EXECUTABLE=/opt/local/bin/python3.4" \
+        -D"PYTHON_INCLUDE_DIR=/opt/local/Library/Frameworks/Python.framework/Versions/3.4/include/python3.4m" \
+        -D"PYTHON_LIBRARY=/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/libpython3.4.dylib" \
         $ADDITIONAL_OPTIONS
 
 cd $installPrefix/..
