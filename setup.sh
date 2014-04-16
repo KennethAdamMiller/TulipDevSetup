@@ -39,10 +39,14 @@ cmake $installPrefix/.. $HOME/workspace/tulip/tulip-src/ -G "Unix Makefiles" \
 cd $installPrefix/..
 make clean && make -j9 install
 echo "export PYTHONPATH=$installPrefix/lib/python"
-echo "export LD_LIBRARY_PATH=$installPrefix"
 if [[ -z $PYTHONPATH ]]; then
 	echo "export PYTHONPATH=\"$installPrefix/lib/python\"" >> ~/.bashrc
 fi
-if [[ -z $LD_LIBRARY_PATH ]]; then
-	echo "export LD_LIBRARY_PATH=\"$installPrefix/install/lib\"" >> ~/.bashrc
+
+if [[ $(uname) == "Linux" ]]; then
+  	echo "export LD_LIBRARY_PATH=\"$installPrefix/install/lib\"" >> ~/.bashrc
+fi
+
+if [[ $(uname) == "Darwin" ]]; then
+  	echo "export DYLD_LIBRARY_PATH=\"$installPrefix/install/lib\"" >> ~/.bashrc
 fi
